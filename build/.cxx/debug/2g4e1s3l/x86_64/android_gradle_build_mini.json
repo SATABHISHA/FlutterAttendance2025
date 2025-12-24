@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/debashispal/development/flutter/packages/flutter_tools/gradle/src/main/scripts/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/debashispal/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/debashispal/Downloads/FlutterAttendance2025/build/.cxx/debug/2g4e1s3l/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/debashispal/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/debashispal/Downloads/FlutterAttendance2025/build/.cxx/debug/2g4e1s3l/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

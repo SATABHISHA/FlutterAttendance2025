@@ -1,0 +1,486 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.attendance.flutter_attendance"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="36" />
+10    <!--
+11         The INTERNET permission is required for development. Specifically,
+12         the Flutter tool needs it to communicate with the running application
+13         to allow setting breakpoints, to provide hot reload, etc.
+14    -->
+15    <uses-permission android:name="android.permission.INTERNET" />
+15-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:11:5-67
+15-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:11:22-64
+16    <!-- Permissions for Location -->
+17    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+17-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:3:5-79
+17-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:3:22-76
+18    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Permissions for Biometric Authentication -->
+18-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:4:5-81
+18-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:4:22-78
+19    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+19-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:7:5-72
+19-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:7:22-69
+20    <uses-permission android:name="android.permission.USE_FINGERPRINT" /> <!-- Camera Permission for profile picture -->
+20-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:8:5-74
+20-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:8:22-71
+21    <uses-permission android:name="android.permission.CAMERA" />
+21-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:14:5-65
+21-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:14:22-62
+22    <!--
+23 Required to query activities that can process text, see:
+24         https://developer.android.com/training/package-visibility and
+25         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+26
+27         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin.
+28    -->
+29    <queries>
+29-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:53:5-58:15
+30        <intent>
+30-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:54:9-57:18
+31            <action android:name="android.intent.action.PROCESS_TEXT" />
+31-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:55:13-72
+31-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:55:21-70
+32
+33            <data android:mimeType="text/plain" />
+33-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:56:13-50
+33-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:56:19-48
+34        </intent>
+35    </queries>
+36
+37    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+37-->[:connectivity_plus] /Users/debashispal/Downloads/FlutterAttendance2025/build/connectivity_plus/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:7:5-79
+37-->[:connectivity_plus] /Users/debashispal/Downloads/FlutterAttendance2025/build/connectivity_plus/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:7:22-76
+38    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+38-->[com.google.android.recaptcha:recaptcha:18.6.1] /Users/debashispal/.gradle/caches/8.14/transforms/08e4513711ae871623791484ca016f8a/transformed/recaptcha-18.6.1/AndroidManifest.xml:9:5-98
+38-->[com.google.android.recaptcha:recaptcha:18.6.1] /Users/debashispal/.gradle/caches/8.14/transforms/08e4513711ae871623791484ca016f8a/transformed/recaptcha-18.6.1/AndroidManifest.xml:9:22-95
+39
+40    <permission
+40-->[androidx.core:core:1.13.1] /Users/debashispal/.gradle/caches/8.14/transforms/42528e965edc01f3e88b567d5a8b7ac2/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+41        android:name="com.attendance.flutter_attendance.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+41-->[androidx.core:core:1.13.1] /Users/debashispal/.gradle/caches/8.14/transforms/42528e965edc01f3e88b567d5a8b7ac2/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+42        android:protectionLevel="signature" />
+42-->[androidx.core:core:1.13.1] /Users/debashispal/.gradle/caches/8.14/transforms/42528e965edc01f3e88b567d5a8b7ac2/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+43
+44    <uses-permission android:name="com.attendance.flutter_attendance.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+44-->[androidx.core:core:1.13.1] /Users/debashispal/.gradle/caches/8.14/transforms/42528e965edc01f3e88b567d5a8b7ac2/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+44-->[androidx.core:core:1.13.1] /Users/debashispal/.gradle/caches/8.14/transforms/42528e965edc01f3e88b567d5a8b7ac2/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+45
+46    <application
+47        android:name="android.app.Application"
+48        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+48-->[androidx.core:core:1.13.1] /Users/debashispal/.gradle/caches/8.14/transforms/42528e965edc01f3e88b567d5a8b7ac2/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+49        android:debuggable="true"
+50        android:extractNativeLibs="false"
+51        android:icon="@mipmap/ic_launcher"
+52        android:label="flutter_attendance" >
+53        <activity
+54            android:name="com.attendance.flutter_attendance.MainActivity"
+55            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+56            android:exported="true"
+57            android:hardwareAccelerated="true"
+58            android:launchMode="singleTop"
+59            android:taskAffinity=""
+60            android:theme="@style/LaunchTheme"
+61            android:windowSoftInputMode="adjustResize" >
+62
+63            <!--
+64                 Specifies an Android theme to apply to this Activity as soon as
+65                 the Android process has started. This theme is visible to the user
+66                 while the Flutter UI initializes. After that, this theme continues
+67                 to determine the Window background behind the Flutter UI.
+68            -->
+69            <meta-data
+70                android:name="io.flutter.embedding.android.NormalTheme"
+71                android:resource="@style/NormalTheme" />
+72
+73            <intent-filter>
+74                <action android:name="android.intent.action.MAIN" />
+75
+76                <category android:name="android.intent.category.LAUNCHER" />
+77            </intent-filter>
+78        </activity>
+79        <!--
+80             Don't delete the meta-data below.
+81             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+82        -->
+83        <meta-data
+84            android:name="flutterEmbedding"
+85            android:value="2" />
+86
+87        <service
+87-->[:geolocator_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/geolocator_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:8:9-12:56
+88            android:name="com.baseflow.geolocator.GeolocatorLocationService"
+88-->[:geolocator_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/geolocator_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:9:13-77
+89            android:enabled="true"
+89-->[:geolocator_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/geolocator_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:10:13-35
+90            android:exported="false"
+90-->[:geolocator_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/geolocator_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:11:13-37
+91            android:foregroundServiceType="location" />
+91-->[:geolocator_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/geolocator_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:12:13-53
+92
+93        <provider
+93-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:9:9-17:20
+94            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
+94-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:10:13-82
+95            android:authorities="com.attendance.flutter_attendance.flutter.image_provider"
+95-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:11:13-74
+96            android:exported="false"
+96-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:12:13-37
+97            android:grantUriPermissions="true" >
+97-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:13:13-47
+98            <meta-data
+98-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:14:13-16:75
+99                android:name="android.support.FILE_PROVIDER_PATHS"
+99-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:15:17-67
+100                android:resource="@xml/flutter_image_picker_file_paths" />
+100-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:16:17-72
+101        </provider> <!-- Trigger Google Play services to install the backported photo picker module. -->
+102        <service
+102-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:19:9-31:19
+103            android:name="com.google.android.gms.metadata.ModuleDependencies"
+103-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:20:13-78
+104            android:enabled="false"
+104-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:21:13-36
+105            android:exported="false" >
+105-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:22:13-37
+106            <intent-filter>
+106-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:24:13-26:29
+107                <action android:name="com.google.android.gms.metadata.MODULE_DEPENDENCIES" />
+107-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:25:17-94
+107-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:25:25-91
+108            </intent-filter>
+109
+110            <meta-data
+110-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:28:13-30:36
+111                android:name="photopicker_activity:0:required"
+111-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:29:17-63
+112                android:value="" />
+112-->[:image_picker_android] /Users/debashispal/Downloads/FlutterAttendance2025/build/image_picker_android/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:30:17-33
+113        </service>
+114        <service
+114-->[:firebase_auth] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_auth/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:8:9-12:19
+115            android:name="com.google.firebase.components.ComponentDiscoveryService"
+115-->[:firebase_auth] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_auth/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:8:18-89
+116            android:directBootAware="true"
+116-->[com.google.firebase:firebase-common:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/a2c986d820dacd12db53ac0c0fc0e263/transformed/firebase-common-21.0.0/AndroidManifest.xml:32:13-43
+117            android:exported="false" >
+117-->[com.google.firebase:firebase-database:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/ce8b28203a4c23cafcc80e94727b8be3/transformed/firebase-database-21.0.0/AndroidManifest.xml:28:13-37
+118            <meta-data
+118-->[:firebase_auth] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_auth/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:9:13-11:85
+119                android:name="com.google.firebase.components:io.flutter.plugins.firebase.auth.FlutterFirebaseAuthRegistrar"
+119-->[:firebase_auth] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_auth/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:10:17-124
+120                android:value="com.google.firebase.components.ComponentRegistrar" />
+120-->[:firebase_auth] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_auth/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:11:17-82
+121            <meta-data
+121-->[:firebase_database] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_database/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:9:13-11:85
+122                android:name="com.google.firebase.components:io.flutter.plugins.firebase.database.FlutterFirebaseAppRegistrar"
+122-->[:firebase_database] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_database/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:10:17-127
+123                android:value="com.google.firebase.components.ComponentRegistrar" />
+123-->[:firebase_database] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_database/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:11:17-82
+124            <meta-data
+124-->[:firebase_storage] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_storage/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:9:13-11:85
+125                android:name="com.google.firebase.components:io.flutter.plugins.firebase.storage.FlutterFirebaseAppRegistrar"
+125-->[:firebase_storage] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_storage/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:10:17-126
+126                android:value="com.google.firebase.components.ComponentRegistrar" />
+126-->[:firebase_storage] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_storage/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:11:17-82
+127            <meta-data
+127-->[:firebase_core] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_core/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:9:13-11:85
+128                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar"
+128-->[:firebase_core] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_core/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:10:17-124
+129                android:value="com.google.firebase.components.ComponentRegistrar" />
+129-->[:firebase_core] /Users/debashispal/Downloads/FlutterAttendance2025/build/firebase_core/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:11:17-82
+130            <meta-data
+130-->[com.google.firebase:firebase-database:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/ce8b28203a4c23cafcc80e94727b8be3/transformed/firebase-database-21.0.0/AndroidManifest.xml:29:13-31:85
+131                android:name="com.google.firebase.components:com.google.firebase.database.FirebaseDatabaseKtxRegistrar"
+131-->[com.google.firebase:firebase-database:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/ce8b28203a4c23cafcc80e94727b8be3/transformed/firebase-database-21.0.0/AndroidManifest.xml:30:17-120
+132                android:value="com.google.firebase.components.ComponentRegistrar" />
+132-->[com.google.firebase:firebase-database:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/ce8b28203a4c23cafcc80e94727b8be3/transformed/firebase-database-21.0.0/AndroidManifest.xml:31:17-82
+133            <meta-data
+133-->[com.google.firebase:firebase-database:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/ce8b28203a4c23cafcc80e94727b8be3/transformed/firebase-database-21.0.0/AndroidManifest.xml:32:13-34:85
+134                android:name="com.google.firebase.components:com.google.firebase.database.DatabaseRegistrar"
+134-->[com.google.firebase:firebase-database:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/ce8b28203a4c23cafcc80e94727b8be3/transformed/firebase-database-21.0.0/AndroidManifest.xml:33:17-109
+135                android:value="com.google.firebase.components.ComponentRegistrar" />
+135-->[com.google.firebase:firebase-database:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/ce8b28203a4c23cafcc80e94727b8be3/transformed/firebase-database-21.0.0/AndroidManifest.xml:34:17-82
+136            <meta-data
+136-->[com.google.firebase:firebase-storage:21.0.2] /Users/debashispal/.gradle/caches/8.14/transforms/460561c47f198f29c05f20733cfd5bad/transformed/firebase-storage-21.0.2/AndroidManifest.xml:30:13-32:85
+137                android:name="com.google.firebase.components:com.google.firebase.storage.FirebaseStorageKtxRegistrar"
+137-->[com.google.firebase:firebase-storage:21.0.2] /Users/debashispal/.gradle/caches/8.14/transforms/460561c47f198f29c05f20733cfd5bad/transformed/firebase-storage-21.0.2/AndroidManifest.xml:31:17-118
+138                android:value="com.google.firebase.components.ComponentRegistrar" />
+138-->[com.google.firebase:firebase-storage:21.0.2] /Users/debashispal/.gradle/caches/8.14/transforms/460561c47f198f29c05f20733cfd5bad/transformed/firebase-storage-21.0.2/AndroidManifest.xml:32:17-82
+139            <meta-data
+139-->[com.google.firebase:firebase-storage:21.0.2] /Users/debashispal/.gradle/caches/8.14/transforms/460561c47f198f29c05f20733cfd5bad/transformed/firebase-storage-21.0.2/AndroidManifest.xml:33:13-35:85
+140                android:name="com.google.firebase.components:com.google.firebase.storage.StorageRegistrar"
+140-->[com.google.firebase:firebase-storage:21.0.2] /Users/debashispal/.gradle/caches/8.14/transforms/460561c47f198f29c05f20733cfd5bad/transformed/firebase-storage-21.0.2/AndroidManifest.xml:34:17-107
+141                android:value="com.google.firebase.components.ComponentRegistrar" />
+141-->[com.google.firebase:firebase-storage:21.0.2] /Users/debashispal/.gradle/caches/8.14/transforms/460561c47f198f29c05f20733cfd5bad/transformed/firebase-storage-21.0.2/AndroidManifest.xml:35:17-82
+142            <meta-data
+142-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:69:13-71:85
+143                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+143-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:70:17-109
+144                android:value="com.google.firebase.components.ComponentRegistrar" />
+144-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:71:17-82
+145            <meta-data
+145-->[com.google.firebase:firebase-appcheck:18.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/b6a0c2236d745f0be37b38c82ae7ce67/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:25:13-27:85
+146                android:name="com.google.firebase.components:com.google.firebase.appcheck.FirebaseAppCheckKtxRegistrar"
+146-->[com.google.firebase:firebase-appcheck:18.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/b6a0c2236d745f0be37b38c82ae7ce67/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:26:17-120
+147                android:value="com.google.firebase.components.ComponentRegistrar" />
+147-->[com.google.firebase:firebase-appcheck:18.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/b6a0c2236d745f0be37b38c82ae7ce67/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:27:17-82
+148            <meta-data
+148-->[com.google.firebase:firebase-appcheck:18.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/b6a0c2236d745f0be37b38c82ae7ce67/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:28:13-30:85
+149                android:name="com.google.firebase.components:com.google.firebase.appcheck.FirebaseAppCheckRegistrar"
+149-->[com.google.firebase:firebase-appcheck:18.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/b6a0c2236d745f0be37b38c82ae7ce67/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:29:17-117
+150                android:value="com.google.firebase.components.ComponentRegistrar" />
+150-->[com.google.firebase:firebase-appcheck:18.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/b6a0c2236d745f0be37b38c82ae7ce67/transformed/firebase-appcheck-18.0.0/AndroidManifest.xml:30:17-82
+151            <meta-data
+151-->[com.google.firebase:firebase-common-ktx:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/8777bab0b239085725f18fe96b954078/transformed/firebase-common-ktx-21.0.0/AndroidManifest.xml:12:13-14:85
+152                android:name="com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar"
+152-->[com.google.firebase:firebase-common-ktx:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/8777bab0b239085725f18fe96b954078/transformed/firebase-common-ktx-21.0.0/AndroidManifest.xml:13:17-116
+153                android:value="com.google.firebase.components.ComponentRegistrar" />
+153-->[com.google.firebase:firebase-common-ktx:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/8777bab0b239085725f18fe96b954078/transformed/firebase-common-ktx-21.0.0/AndroidManifest.xml:14:17-82
+154            <meta-data
+154-->[com.google.firebase:firebase-common:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/a2c986d820dacd12db53ac0c0fc0e263/transformed/firebase-common-21.0.0/AndroidManifest.xml:35:13-37:85
+155                android:name="com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar"
+155-->[com.google.firebase:firebase-common:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/a2c986d820dacd12db53ac0c0fc0e263/transformed/firebase-common-21.0.0/AndroidManifest.xml:36:17-109
+156                android:value="com.google.firebase.components.ComponentRegistrar" />
+156-->[com.google.firebase:firebase-common:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/a2c986d820dacd12db53ac0c0fc0e263/transformed/firebase-common-21.0.0/AndroidManifest.xml:37:17-82
+157        </service>
+158
+159        <uses-library
+159-->[androidx.window:window:1.2.0] /Users/debashispal/.gradle/caches/8.14/transforms/683453673aeaae27fca02d1887bfda7c/transformed/window-1.2.0/AndroidManifest.xml:23:9-25:40
+160            android:name="androidx.window.extensions"
+160-->[androidx.window:window:1.2.0] /Users/debashispal/.gradle/caches/8.14/transforms/683453673aeaae27fca02d1887bfda7c/transformed/window-1.2.0/AndroidManifest.xml:24:13-54
+161            android:required="false" />
+161-->[androidx.window:window:1.2.0] /Users/debashispal/.gradle/caches/8.14/transforms/683453673aeaae27fca02d1887bfda7c/transformed/window-1.2.0/AndroidManifest.xml:25:13-37
+162        <uses-library
+162-->[androidx.window:window:1.2.0] /Users/debashispal/.gradle/caches/8.14/transforms/683453673aeaae27fca02d1887bfda7c/transformed/window-1.2.0/AndroidManifest.xml:26:9-28:40
+163            android:name="androidx.window.sidecar"
+163-->[androidx.window:window:1.2.0] /Users/debashispal/.gradle/caches/8.14/transforms/683453673aeaae27fca02d1887bfda7c/transformed/window-1.2.0/AndroidManifest.xml:27:13-51
+164            android:required="false" />
+164-->[androidx.window:window:1.2.0] /Users/debashispal/.gradle/caches/8.14/transforms/683453673aeaae27fca02d1887bfda7c/transformed/window-1.2.0/AndroidManifest.xml:28:13-37
+165
+166        <activity
+166-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:29:9-46:20
+167            android:name="com.google.firebase.auth.internal.GenericIdpActivity"
+167-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:30:13-80
+168            android:excludeFromRecents="true"
+168-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:31:13-46
+169            android:exported="true"
+169-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:32:13-36
+170            android:launchMode="singleTask"
+170-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:33:13-44
+171            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+171-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:34:13-72
+172            <intent-filter>
+172-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:35:13-45:29
+173                <action android:name="android.intent.action.VIEW" />
+173-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:36:17-69
+173-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:36:25-66
+174
+175                <category android:name="android.intent.category.DEFAULT" />
+175-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:38:17-76
+175-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:38:27-73
+176                <category android:name="android.intent.category.BROWSABLE" />
+176-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:39:17-78
+176-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:39:27-75
+177
+178                <data
+178-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:56:13-50
+179                    android:host="firebase.auth"
+180                    android:path="/"
+181                    android:scheme="genericidp" />
+182            </intent-filter>
+183        </activity>
+184        <activity
+184-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:47:9-64:20
+185            android:name="com.google.firebase.auth.internal.RecaptchaActivity"
+185-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:48:13-79
+186            android:excludeFromRecents="true"
+186-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:49:13-46
+187            android:exported="true"
+187-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:50:13-36
+188            android:launchMode="singleTask"
+188-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:51:13-44
+189            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+189-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:52:13-72
+190            <intent-filter>
+190-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:53:13-63:29
+191                <action android:name="android.intent.action.VIEW" />
+191-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:36:17-69
+191-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:36:25-66
+192
+193                <category android:name="android.intent.category.DEFAULT" />
+193-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:38:17-76
+193-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:38:27-73
+194                <category android:name="android.intent.category.BROWSABLE" />
+194-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:39:17-78
+194-->[com.google.firebase:firebase-auth:23.2.1] /Users/debashispal/.gradle/caches/8.14/transforms/49e5252ffcfc2334072ef42988a16943/transformed/firebase-auth-23.2.1/AndroidManifest.xml:39:27-75
+195
+196                <data
+196-->/Users/debashispal/Downloads/FlutterAttendance2025/android/app/src/main/AndroidManifest.xml:56:13-50
+197                    android:host="firebase.auth"
+198                    android:path="/"
+199                    android:scheme="recaptcha" />
+200            </intent-filter>
+201        </activity>
+202
+203        <service
+203-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:24:9-32:19
+204            android:name="androidx.credentials.playservices.CredentialProviderMetadataHolder"
+204-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:25:13-94
+205            android:enabled="true"
+205-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:26:13-35
+206            android:exported="false" >
+206-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:27:13-37
+207            <meta-data
+207-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:29:13-31:104
+208                android:name="androidx.credentials.CREDENTIAL_PROVIDER_KEY"
+208-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:30:17-76
+209                android:value="androidx.credentials.playservices.CredentialProviderPlayServicesImpl" />
+209-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:31:17-101
+210        </service>
+211
+212        <activity
+212-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:34:9-41:20
+213            android:name="androidx.credentials.playservices.HiddenActivity"
+213-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:35:13-76
+214            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+214-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:36:13-87
+215            android:enabled="true"
+215-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:37:13-35
+216            android:exported="false"
+216-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:38:13-37
+217            android:fitsSystemWindows="true"
+217-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:39:13-45
+218            android:theme="@style/Theme.Hidden" >
+218-->[androidx.credentials:credentials-play-services-auth:1.2.0-rc01] /Users/debashispal/.gradle/caches/8.14/transforms/ac1969dab3422cf724a52babaf0e0617/transformed/credentials-play-services-auth-1.2.0-rc01/AndroidManifest.xml:40:13-48
+219        </activity>
+220        <activity
+220-->[com.google.android.gms:play-services-auth:20.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/e94ef6f17386715fcd2f60ce23686fce/transformed/play-services-auth-20.7.0/AndroidManifest.xml:23:9-27:75
+221            android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+221-->[com.google.android.gms:play-services-auth:20.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/e94ef6f17386715fcd2f60ce23686fce/transformed/play-services-auth-20.7.0/AndroidManifest.xml:24:13-93
+222            android:excludeFromRecents="true"
+222-->[com.google.android.gms:play-services-auth:20.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/e94ef6f17386715fcd2f60ce23686fce/transformed/play-services-auth-20.7.0/AndroidManifest.xml:25:13-46
+223            android:exported="false"
+223-->[com.google.android.gms:play-services-auth:20.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/e94ef6f17386715fcd2f60ce23686fce/transformed/play-services-auth-20.7.0/AndroidManifest.xml:26:13-37
+224            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+224-->[com.google.android.gms:play-services-auth:20.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/e94ef6f17386715fcd2f60ce23686fce/transformed/play-services-auth-20.7.0/AndroidManifest.xml:27:13-72
+225        <!--
+226            Service handling Google Sign-In user revocation. For apps that do not integrate with
+227            Google Sign-In, this service will never be started.
+228        -->
+229        <service
+229-->[com.google.android.gms:play-services-auth:20.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/e94ef6f17386715fcd2f60ce23686fce/transformed/play-services-auth-20.7.0/AndroidManifest.xml:33:9-37:51
+230            android:name="com.google.android.gms.auth.api.signin.RevocationBoundService"
+230-->[com.google.android.gms:play-services-auth:20.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/e94ef6f17386715fcd2f60ce23686fce/transformed/play-services-auth-20.7.0/AndroidManifest.xml:34:13-89
+231            android:exported="true"
+231-->[com.google.android.gms:play-services-auth:20.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/e94ef6f17386715fcd2f60ce23686fce/transformed/play-services-auth-20.7.0/AndroidManifest.xml:35:13-36
+232            android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION"
+232-->[com.google.android.gms:play-services-auth:20.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/e94ef6f17386715fcd2f60ce23686fce/transformed/play-services-auth-20.7.0/AndroidManifest.xml:36:13-107
+233            android:visibleToInstantApps="true" />
+233-->[com.google.android.gms:play-services-auth:20.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/e94ef6f17386715fcd2f60ce23686fce/transformed/play-services-auth-20.7.0/AndroidManifest.xml:37:13-48
+234
+235        <activity
+235-->[com.google.android.gms:play-services-base:18.3.0] /Users/debashispal/.gradle/caches/8.14/transforms/4db01d0890ce49f061461c8a604cb8ba/transformed/play-services-base-18.3.0/AndroidManifest.xml:20:9-22:45
+236            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+236-->[com.google.android.gms:play-services-base:18.3.0] /Users/debashispal/.gradle/caches/8.14/transforms/4db01d0890ce49f061461c8a604cb8ba/transformed/play-services-base-18.3.0/AndroidManifest.xml:20:19-85
+237            android:exported="false"
+237-->[com.google.android.gms:play-services-base:18.3.0] /Users/debashispal/.gradle/caches/8.14/transforms/4db01d0890ce49f061461c8a604cb8ba/transformed/play-services-base-18.3.0/AndroidManifest.xml:22:19-43
+238            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+238-->[com.google.android.gms:play-services-base:18.3.0] /Users/debashispal/.gradle/caches/8.14/transforms/4db01d0890ce49f061461c8a604cb8ba/transformed/play-services-base-18.3.0/AndroidManifest.xml:21:19-78
+239
+240        <provider
+240-->[com.google.firebase:firebase-common:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/a2c986d820dacd12db53ac0c0fc0e263/transformed/firebase-common-21.0.0/AndroidManifest.xml:23:9-28:39
+241            android:name="com.google.firebase.provider.FirebaseInitProvider"
+241-->[com.google.firebase:firebase-common:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/a2c986d820dacd12db53ac0c0fc0e263/transformed/firebase-common-21.0.0/AndroidManifest.xml:24:13-77
+242            android:authorities="com.attendance.flutter_attendance.firebaseinitprovider"
+242-->[com.google.firebase:firebase-common:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/a2c986d820dacd12db53ac0c0fc0e263/transformed/firebase-common-21.0.0/AndroidManifest.xml:25:13-72
+243            android:directBootAware="true"
+243-->[com.google.firebase:firebase-common:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/a2c986d820dacd12db53ac0c0fc0e263/transformed/firebase-common-21.0.0/AndroidManifest.xml:26:13-43
+244            android:exported="false"
+244-->[com.google.firebase:firebase-common:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/a2c986d820dacd12db53ac0c0fc0e263/transformed/firebase-common-21.0.0/AndroidManifest.xml:27:13-37
+245            android:initOrder="100" />
+245-->[com.google.firebase:firebase-common:21.0.0] /Users/debashispal/.gradle/caches/8.14/transforms/a2c986d820dacd12db53ac0c0fc0e263/transformed/firebase-common-21.0.0/AndroidManifest.xml:28:13-36
+246        <provider
+246-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/0df19da5a442f2ea642e14a4c24d7c98/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+247            android:name="androidx.startup.InitializationProvider"
+247-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/0df19da5a442f2ea642e14a4c24d7c98/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:25:13-67
+248            android:authorities="com.attendance.flutter_attendance.androidx-startup"
+248-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/0df19da5a442f2ea642e14a4c24d7c98/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:26:13-68
+249            android:exported="false" >
+249-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/0df19da5a442f2ea642e14a4c24d7c98/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:27:13-37
+250            <meta-data
+250-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/0df19da5a442f2ea642e14a4c24d7c98/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+251                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+251-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/0df19da5a442f2ea642e14a4c24d7c98/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+252                android:value="androidx.startup" />
+252-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/debashispal/.gradle/caches/8.14/transforms/0df19da5a442f2ea642e14a4c24d7c98/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+253            <meta-data
+253-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+254                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+254-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+255                android:value="androidx.startup" />
+255-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+256        </provider>
+257
+258        <meta-data
+258-->[com.google.android.gms:play-services-basement:18.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/efc779f4fb58080b7b4ad4aaf0afc1c4/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:9-122
+259            android:name="com.google.android.gms.version"
+259-->[com.google.android.gms:play-services-basement:18.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/efc779f4fb58080b7b4ad4aaf0afc1c4/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:20-65
+260            android:value="@integer/google_play_services_version" />
+260-->[com.google.android.gms:play-services-basement:18.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/efc779f4fb58080b7b4ad4aaf0afc1c4/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:66-119
+261
+262        <receiver
+262-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+263            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+263-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+264            android:directBootAware="false"
+264-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+265            android:enabled="true"
+265-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+266            android:exported="true"
+266-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+267            android:permission="android.permission.DUMP" >
+267-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+268            <intent-filter>
+268-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+269                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+269-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+269-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+270            </intent-filter>
+271            <intent-filter>
+271-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+272                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+272-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+272-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+273            </intent-filter>
+274            <intent-filter>
+274-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+275                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+275-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+275-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+276            </intent-filter>
+277            <intent-filter>
+277-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+278                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+278-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+278-->[androidx.profileinstaller:profileinstaller:1.4.0] /Users/debashispal/.gradle/caches/8.14/transforms/689ada6bf85a135b3369e21162af28cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
+279            </intent-filter>
+280        </receiver> <!-- The activities will be merged into the manifest of the hosting app. -->
+281        <activity
+281-->[com.google.android.play:core-common:2.0.3] /Users/debashispal/.gradle/caches/8.14/transforms/75ea52c483826a96cd0a0d9036e82395/transformed/core-common-2.0.3/AndroidManifest.xml:14:9-18:65
+282            android:name="com.google.android.play.core.common.PlayCoreDialogWrapperActivity"
+282-->[com.google.android.play:core-common:2.0.3] /Users/debashispal/.gradle/caches/8.14/transforms/75ea52c483826a96cd0a0d9036e82395/transformed/core-common-2.0.3/AndroidManifest.xml:15:13-93
+283            android:exported="false"
+283-->[com.google.android.play:core-common:2.0.3] /Users/debashispal/.gradle/caches/8.14/transforms/75ea52c483826a96cd0a0d9036e82395/transformed/core-common-2.0.3/AndroidManifest.xml:16:13-37
+284            android:stateNotNeeded="true"
+284-->[com.google.android.play:core-common:2.0.3] /Users/debashispal/.gradle/caches/8.14/transforms/75ea52c483826a96cd0a0d9036e82395/transformed/core-common-2.0.3/AndroidManifest.xml:17:13-42
+285            android:theme="@style/Theme.PlayCore.Transparent" />
+285-->[com.google.android.play:core-common:2.0.3] /Users/debashispal/.gradle/caches/8.14/transforms/75ea52c483826a96cd0a0d9036e82395/transformed/core-common-2.0.3/AndroidManifest.xml:18:13-62
+286    </application>
+287
+288</manifest>
