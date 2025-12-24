@@ -1,2 +1,0 @@
-/Users/debashispal/Downloads/FlutterAttendance2025/build/.cxx/debug/2g4e1s3l/x86_64/CMakeFiles/edit_cache.dir
-/Users/debashispal/Downloads/FlutterAttendance2025/build/.cxx/debug/2g4e1s3l/x86_64/CMakeFiles/rebuild_cache.dir
