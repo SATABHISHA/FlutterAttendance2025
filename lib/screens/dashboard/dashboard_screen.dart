@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import '../../blocs/blocs.dart';
 import '../../models/models.dart';
 import '../../services/services.dart';
@@ -17,8 +18,11 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final StorageService _storageService = StorageService();
+  final ProjectService _projectService = ProjectService();
   String? _profileImagePath;
   bool _isIOS = false;
+  List<ProjectAssignment> _userAssignments = [];
+  bool _loadingAssignments = false;
 
   @override
   void initState() {
@@ -26,6 +30,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _isIOS = Platform.isIOS;
     _loadProfileImage();
     _loadData();
+    _loadUserAssignments();
+  }
+
+  Future<void> _loadUserAssignments() async {
+    final user = context.read<AuthBloc>().state.user;
+    if (user == null) return;
+    
+    setState(() => _loadingAssignments = true);
+    try {
+      final assignments = await _projectService.getActiveUserAssignments(user.id);
+      if (mounted) {
+        setState(() {
+          _userAssignments = assignments;
+          _loadingAssignments = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _loadingAssignments = false);
+      }
+    }
   }
 
   Future<void> _loadProfileImage() async {
@@ -68,6 +93,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           body: RefreshIndicator(
             onRefresh: () async {
               _loadData();
+              _loadUserAssignments();
             },
             child: CustomScrollView(
               slivers: [
@@ -169,6 +195,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         // Today's Attendance Card
                         _buildAttendanceCard(user),
                         const SizedBox(height: 20),
+
+                        // Project Assignments Section (for location-based check-in)
+                        if (_userAssignments.isNotEmpty || _loadingAssignments) ...[
+                          Text(
+                            'My Project Assignments',
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                          const SizedBox(height: 12),
+                          _buildProjectAssignmentsSection(),
+                          const SizedBox(height: 20),
+                        ],
 
                         // Quick Actions
                         Text(
@@ -316,6 +353,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.pushNamed(context, '/team-reports');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.business),
+                  title: const Text('Project Allocation'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/project-allocation');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.analytics),
+                  title: const Text('Team Performance'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/task-performance');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.download),
+                  title: const Text('Export Attendance'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/attendance-export');
                   },
                 ),
               ],
@@ -659,6 +720,332 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProjectAssignmentsSection() {
+    if (_loadingAssignments) {
+      return const Card(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
+
+    final user = context.read<AuthBloc>().state.user;
+    final isSupervisor = user?.isSupervisor ?? false;
+    
+    if (_userAssignments.isEmpty && !isSupervisor) {
+      // Non-supervisor with no project - show warning and request button
+      return Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: Colors.orange.shade50,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.warning_amber, color: Colors.orange, size: 28),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'No Project Assigned',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.orange,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'You cannot check in without an assigned project. Contact your supervisor or request attendance permission.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.orange.shade800,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => _requestAttendancePermission(user!),
+                  icon: const Icon(Icons.send),
+                  label: const Text('Request Attendance Permission'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else if (_userAssignments.isEmpty && isSupervisor) {
+      // Supervisor with no assignments - that's ok, they can still check in
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      children: _userAssignments.map((assignment) {
+        return _buildProjectAssignmentCard(assignment);
+      }).toList(),
+    );
+  }
+
+  Widget _buildProjectAssignmentCard(ProjectAssignment assignment) {
+    final now = DateTime.now();
+    final totalDays = assignment.endDate.difference(assignment.startDate).inDays;
+    final elapsedDays = now.difference(assignment.startDate).inDays;
+    final remainingDays = assignment.endDate.difference(now).inDays;
+    final progress = totalDays > 0 ? (elapsedDays / totalDays).clamp(0.0, 1.0) : 0.0;
+    
+    final isOverdue = remainingDays < 0;
+    final isNearEnd = remainingDays >= 0 && remainingDays <= 7;
+    
+    Color statusColor;
+    String statusText;
+    if (isOverdue) {
+      statusColor = AppTheme.errorColor;
+      statusText = 'Overdue by ${remainingDays.abs()} days';
+    } else if (isNearEnd) {
+      statusColor = Colors.orange;
+      statusText = remainingDays == 0 ? 'Ends today' : '$remainingDays days remaining';
+    } else {
+      statusColor = AppTheme.successColor;
+      statusText = '$remainingDays days remaining';
+    }
+
+    final dateFormat = DateFormat('MMM dd, yyyy');
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: isOverdue ? AppTheme.errorColor.withOpacity(0.5) : Colors.transparent,
+          width: 2,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Project Header
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.business, color: AppTheme.primaryColor),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        assignment.projectName,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          Icon(Icons.location_on, size: 14, color: Colors.grey.shade600),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              assignment.address,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                // Status Badge
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: statusColor.withOpacity(0.5)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        isOverdue ? Icons.warning : Icons.schedule,
+                        size: 12,
+                        color: statusColor,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        statusText,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: statusColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Progress Bar Section
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Project Duration',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      '${(progress * 100).toInt()}% elapsed',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: statusColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                // Animated Progress Bar
+                TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0, end: progress),
+                  duration: const Duration(milliseconds: 1200),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, child) {
+                    return Stack(
+                      children: [
+                        // Background
+                        Container(
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        // Progress
+                        FractionallySizedBox(
+                          widthFactor: value,
+                          child: Container(
+                            height: 10,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: isOverdue
+                                    ? [AppTheme.errorColor.withOpacity(0.7), AppTheme.errorColor]
+                                    : isNearEnd
+                                        ? [Colors.orange.withOpacity(0.7), Colors.orange]
+                                        : [AppTheme.primaryColor.withOpacity(0.7), AppTheme.primaryColor],
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: statusColor.withOpacity(0.3),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 8),
+                // Date Range
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      dateFormat.format(assignment.startDate),
+                      style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                    ),
+                    Text(
+                      dateFormat.format(assignment.endDate),
+                      style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 12),
+            
+            // Check-in Location Info
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue.shade100),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline, size: 18, color: Colors.blue.shade700),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Check-in allowed within ${assignment.locationBoundary.radiusInMeters.toInt()}m of project location',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.blue.shade700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1015,13 +1402,248 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  void _checkIn(UserModel user) {
+  void _checkIn(UserModel user) async {
+    // Check if user is a supervisor - they can check in without project
+    if (user.isSupervisor) {
+      context.read<AttendanceBloc>().add(AttendanceCheckIn(
+            oderId: user.id,
+            userName: user.name,
+            companyId: user.companyId,
+            corpId: user.corpId,
+          ));
+      return;
+    }
+
+    // For non-supervisors, check project assignments
+    if (_userAssignments.isEmpty) {
+      // No project assigned - check if there's an approved request for today
+      final hasApproval = await _projectService.hasApprovedAttendanceRequest(user.id);
+      if (hasApproval) {
+        // User has approved request, allow check-in
+        context.read<AttendanceBloc>().add(AttendanceCheckIn(
+              oderId: user.id,
+              userName: user.name,
+              companyId: user.companyId,
+              corpId: user.corpId,
+            ));
+        return;
+      }
+      
+      // No project and no approval
+      _showNoProjectError();
+      return;
+    }
+
+    // User has project assignments - validate location
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: Card(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('Validating location...'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      
+      // Get current location
+      final locationService = LocationService();
+      final currentPosition = await locationService.getCurrentPosition();
+      
+      if (!mounted) return;
+      Navigator.pop(context); // Close loading dialog
+      
+      // Check if user is within any of their assigned project locations
+      bool isWithinProjectLocation = false;
+      ProjectAssignment? matchedAssignment;
+      
+      for (final assignment in _userAssignments) {
+        if (_projectService.isWithinBoundary(
+          currentPosition.latitude,
+          currentPosition.longitude,
+          assignment.locationBoundary,
+        )) {
+          isWithinProjectLocation = true;
+          matchedAssignment = assignment;
+          break;
+        }
+      }
+      
+      if (!isWithinProjectLocation) {
+        // User is not within any project location
+        _showLocationError(
+          'You are not within your assigned project location.\n\n'
+          'Please move to one of your assigned project areas to check in:\n'
+          '${_userAssignments.map((a) => '• ${a.projectName} - ${a.address}').join('\n')}'
+        );
+        return;
+      }
+      
+      // Show success message with matched project
+      if (mounted && matchedAssignment != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Checking in at ${matchedAssignment.projectName}'),
+            backgroundColor: AppTheme.successColor,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        // Check if dialog is showing before trying to pop
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context); // Close loading if open
+        }
+        _showLocationError('Error validating location: $e');
+      }
+      return;
+    }
+    
+    // Proceed with check-in
     context.read<AttendanceBloc>().add(AttendanceCheckIn(
           oderId: user.id,
           userName: user.name,
           companyId: user.companyId,
           corpId: user.corpId,
         ));
+  }
+
+  void _showNoProjectError() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber, color: Colors.orange),
+            SizedBox(width: 8),
+            Text('No Project Assigned'),
+          ],
+        ),
+        content: const Text(
+          'You cannot check in without an assigned project.\n\n'
+          'Please request attendance permission from your supervisor using the button in the "My Project Assignments" section.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _requestAttendancePermission(UserModel user) async {
+    // Show dialog to request attendance permission from supervisor
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        final controller = TextEditingController();
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.send, color: AppTheme.primaryColor),
+              SizedBox(width: 8),
+              Text('Request Attendance'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'You have no project assigned. Send a request to your supervisor for attendance permission today.',
+                style: TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  labelText: 'Reason (optional)',
+                  hintText: 'Why do you need attendance permission?',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, controller.text),
+              child: const Text('Send Request'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (reason != null && mounted) {
+      // Store attendance request in Firebase
+      try {
+        await _projectService.createAttendanceRequest(
+          userId: user.id,
+          userName: user.name,
+          supervisorId: user.supervisorId ?? '',
+          reason: reason,
+          requestDate: DateTime.now(),
+        );
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Attendance request sent to your supervisor'),
+              backgroundColor: AppTheme.successColor,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to send request: $e'),
+              backgroundColor: AppTheme.errorColor,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  void _showLocationError(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.location_off, color: AppTheme.errorColor),
+            SizedBox(width: 8),
+            Text('Location Check Failed'),
+          ],
+        ),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _checkOut(String attendanceId, String userId) {

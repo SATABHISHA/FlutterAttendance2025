@@ -141,26 +141,62 @@ class AuthService {
 
   Future<List<UserModel>> getSubordinates(String supervisorId) async {
     try {
-      final snapshot = await _database
-          .ref('users')
-          .orderByChild('supervisorId')
-          .equalTo(supervisorId)
-          .get();
+      // Get all users from the company first, then filter by supervisorId
+      // This avoids the need for Firebase index on supervisorId
+      final snapshot = await _database.ref('users').get();
 
       if (snapshot.exists) {
         final List<UserModel> subordinates = [];
         final data = Map<String, dynamic>.from(snapshot.value as Map);
         data.forEach((key, value) {
-          subordinates.add(UserModel.fromRealtimeDB(
-            key,
-            Map<String, dynamic>.from(value),
-          ));
+          final userData = Map<String, dynamic>.from(value);
+          // Check if this user's supervisorId matches
+          if (userData['supervisorId'] == supervisorId) {
+            subordinates.add(UserModel.fromRealtimeDB(key, userData));
+          }
         });
         return subordinates;
       }
       return [];
     } catch (e) {
       throw Exception('Failed to get subordinates: $e');
+    }
+  }
+
+  Future<List<UserModel>> getSupervisorsByCompany(String companyId) async {
+    try {
+      // Get all users and filter by companyId and isSupervisor
+      // This avoids the need for Firebase index on companyId
+      final snapshot = await _database.ref('users').get();
+
+      if (snapshot.exists) {
+        final List<UserModel> supervisors = [];
+        final data = Map<String, dynamic>.from(snapshot.value as Map);
+        data.forEach((key, value) {
+          final userData = Map<String, dynamic>.from(value);
+          // Check if this user belongs to the company and is a supervisor
+          if (userData['companyId'] == companyId && 
+              userData['isSupervisor'] == true &&
+              userData['isAdmin'] != true) {
+            supervisors.add(UserModel.fromRealtimeDB(key, userData));
+          }
+        });
+        return supervisors;
+      }
+      return [];
+    } catch (e) {
+      throw Exception('Failed to get supervisors: $e');
+    }
+  }
+
+  Future<void> updateUserField(String userId, String field, dynamic value) async {
+    try {
+      await _database.ref('users/$userId').update({
+        field: value,
+        'updatedAt': ServerValue.timestamp,
+      });
+    } catch (e) {
+      throw Exception('Failed to update user field: $e');
     }
   }
 

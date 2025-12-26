@@ -13,10 +13,20 @@
     <!-- Camera Permission for profile picture -->
     <uses-permission android:name="android.permission.CAMERA" />
     
+    <!-- Storage Permissions for export -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
     <application
         android:label="flutter_attendance"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        
+        <!-- Google Maps API Key - Replace with your actual API key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA757Vlmix4dHPnBpsU-vcChAH9YSXVcFw"/>
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"

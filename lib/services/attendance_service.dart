@@ -1,8 +1,11 @@
 import 'package:firebase_database/firebase_database.dart';
 import '../models/attendance_model.dart';
+import '../models/project_model.dart';
+import 'project_service.dart';
 
 class AttendanceService {
   final FirebaseDatabase _database = FirebaseDatabase.instance;
+  final ProjectService _projectService = ProjectService();
 
   String _getDateKey(DateTime date) {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
@@ -29,6 +32,51 @@ class AttendanceService {
     }
   }
 
+  /// Check if user can check in from the given location
+  /// Returns a map with 'canCheckIn' boolean and 'reason' string
+  Future<Map<String, dynamic>> validateCheckInLocation({
+    required String userId,
+    required double latitude,
+    required double longitude,
+    required bool canCheckInFromAnywhere,
+  }) async {
+    try {
+      // If user has permission to check in from anywhere, allow it
+      if (canCheckInFromAnywhere) {
+        return {
+          'canCheckIn': true,
+          'reason': null,
+          'projectAssignment': null,
+        };
+      }
+
+      // Check if user is within any active project boundary
+      final result = await _projectService.canUserCheckIn(userId, latitude, longitude);
+      
+      if (result['canCheckIn'] == true) {
+        return {
+          'canCheckIn': true,
+          'reason': null,
+          'projectAssignment': result['assignment'],
+        };
+      } else {
+        return {
+          'canCheckIn': false,
+          'reason': result['reason'] ?? 'You are not within any allocated project location',
+          'projectAssignment': null,
+        };
+      }
+    } catch (e) {
+      // If there's an error checking location, allow check-in but log the error
+      print('Error validating check-in location: $e');
+      return {
+        'canCheckIn': true,
+        'reason': null,
+        'projectAssignment': null,
+      };
+    }
+  }
+
   Future<AttendanceModel> checkIn({
     required String oderId,
     required String userName,
@@ -39,6 +87,8 @@ class AttendanceService {
     required String address,
     String? country,
     String? timezone,
+    String? projectId,
+    String? projectName,
   }) async {
     try {
       // Check if already checked in today
@@ -64,16 +114,73 @@ class AttendanceService {
         status: AttendanceStatus.checkedIn,
         country: country,
         timezone: timezone,
+        projectId: projectId,
+        projectName: projectName,
       );
 
       await _database
           .ref('attendance/$oderId/$dateKey')
           .set(attendance.toRealtimeDB());
 
+      // Index by project if specified
+      if (projectId != null && projectId.isNotEmpty) {
+        await _database.ref('project_attendance/$projectId/$dateKey/$oderId').set(true);
+      }
+
       return attendance;
     } catch (e) {
       throw Exception('Failed to check in: $e');
     }
+  }
+
+  /// Check in with location validation
+  Future<AttendanceModel> checkInWithValidation({
+    required String oderId,
+    required String userName,
+    required String companyId,
+    required String corpId,
+    required double latitude,
+    required double longitude,
+    required String address,
+    required bool canCheckInFromAnywhere,
+    String? country,
+    String? timezone,
+  }) async {
+    // Validate location first
+    final validation = await validateCheckInLocation(
+      userId: oderId,
+      latitude: latitude,
+      longitude: longitude,
+      canCheckInFromAnywhere: canCheckInFromAnywhere,
+    );
+
+    if (validation['canCheckIn'] != true) {
+      throw Exception(validation['reason'] ?? 'Cannot check in from this location');
+    }
+
+    // Get project info from assignment if available
+    String? projectId;
+    String? projectName;
+    
+    if (validation['projectAssignment'] != null) {
+      final assignment = validation['projectAssignment'] as ProjectAssignment;
+      projectId = assignment.projectId;
+      projectName = assignment.projectName;
+    }
+
+    return checkIn(
+      oderId: oderId,
+      userName: userName,
+      companyId: companyId,
+      corpId: corpId,
+      latitude: latitude,
+      longitude: longitude,
+      address: address,
+      country: country,
+      timezone: timezone,
+      projectId: projectId,
+      projectName: projectName,
+    );
   }
 
   Future<AttendanceModel> checkOut({

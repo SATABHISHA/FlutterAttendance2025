@@ -5,6 +5,7 @@ import '../../blocs/blocs.dart';
 import '../../models/models.dart';
 import '../../services/services.dart';
 import '../../utils/utils.dart';
+import '../dashboard/project_allocation_screen.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -247,6 +248,30 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             title: const Text('Companies'),
             onTap: () {
               Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.supervisor_account),
+            title: const Text('Manage Supervisors'),
+            onTap: () {
+              Navigator.pop(context);
+              _showSupervisorManagement();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.assignment),
+            title: const Text('Supervisor Tasks'),
+            onTap: () {
+              Navigator.pop(context);
+              _showSupervisorTasks();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.download),
+            title: const Text('Export Attendance'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/attendance-export');
             },
           ),
           const Divider(),
@@ -803,5 +828,614 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         ],
       ),
     );
+  }
+
+  void _showSupervisorManagement() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => _SupervisorManagementSheet(
+          scrollController: scrollController,
+        ),
+      ),
+    );
+  }
+
+  void _showSupervisorTasks() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => _SupervisorTasksSheet(
+          scrollController: scrollController,
+        ),
+      ),
+    );
+  }
+}
+
+class _SupervisorManagementSheet extends StatefulWidget {
+  final ScrollController scrollController;
+
+  const _SupervisorManagementSheet({required this.scrollController});
+
+  @override
+  State<_SupervisorManagementSheet> createState() => _SupervisorManagementSheetState();
+}
+
+class _SupervisorManagementSheetState extends State<_SupervisorManagementSheet> {
+  final AuthService _authService = AuthService();
+  List<UserModel> _supervisors = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSupervisors();
+  }
+
+  Future<void> _loadSupervisors() async {
+    try {
+      final user = context.read<AuthBloc>().state.user;
+      if (user != null) {
+        final supervisors = await _authService.getSupervisorsByCompany(user.companyId);
+        if (mounted) {
+          setState(() {
+            _supervisors = supervisors;
+            _isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load supervisors: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _toggleCheckInFromAnywhere(UserModel supervisor, bool value) async {
+    try {
+      await _authService.updateUserField(supervisor.id, 'canCheckInFromAnywhere', value);
+      await _loadSupervisors();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              value 
+                ? '${supervisor.name} can now check-in from anywhere'
+                : '${supervisor.name} must check-in from allocated locations'
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update permission: $e')),
+        );
+      }
+    }
+  }
+
+  void _showProjectAllocation(UserModel supervisor) {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProjectAllocationScreen(
+          supervisorId: supervisor.id,
+          supervisorName: supervisor.name,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                const Icon(Icons.supervisor_account, color: AppTheme.primaryColor),
+                const SizedBox(width: 12),
+                const Text(
+                  'Manage Supervisors',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: _loadSupervisors,
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _supervisors.isEmpty
+                    ? const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.people_outline, size: 64, color: Colors.grey),
+                            SizedBox(height: 16),
+                            Text(
+                              'No supervisors found',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        controller: widget.scrollController,
+                        padding: const EdgeInsets.all(16),
+                        itemCount: _supervisors.length,
+                        itemBuilder: (context, index) {
+                          final supervisor = _supervisors[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundColor: AppTheme.primaryColor,
+                                        child: Text(
+                                          Helpers.getInitials(supervisor.name),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              supervisor.name,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Text(
+                                              supervisor.email,
+                                              style: TextStyle(
+                                                color: Colors.grey[600],
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  SwitchListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    title: const Text('Check-in from Anywhere'),
+                                    subtitle: Text(
+                                      supervisor.canCheckInFromAnywhere
+                                          ? 'Can check-in from any location'
+                                          : 'Must check-in from allocated locations',
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                    value: supervisor.canCheckInFromAnywhere,
+                                    onChanged: (value) => _toggleCheckInFromAnywhere(supervisor, value),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      OutlinedButton.icon(
+                                        icon: const Icon(Icons.business, size: 18),
+                                        label: const Text('Allocate Projects'),
+                                        onPressed: () => _showProjectAllocation(supervisor),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SupervisorTasksSheet extends StatefulWidget {
+  final ScrollController scrollController;
+
+  const _SupervisorTasksSheet({required this.scrollController});
+
+  @override
+  State<_SupervisorTasksSheet> createState() => _SupervisorTasksSheetState();
+}
+
+class _SupervisorTasksSheetState extends State<_SupervisorTasksSheet> {
+  final TaskService _taskService = TaskService();
+  List<TaskModel> _tasks = [];
+  bool _isLoading = true;
+  String _filterStatus = 'all';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTasks();
+  }
+
+  Future<void> _loadTasks() async {
+    try {
+      final user = context.read<AuthBloc>().state.user;
+      if (user != null) {
+        final tasks = await _taskService.getSupervisorTasksForAdmin(user.companyId);
+        if (mounted) {
+          setState(() {
+            _tasks = tasks;
+            _isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load tasks: $e')),
+        );
+      }
+    }
+  }
+
+  List<TaskModel> get _filteredTasks {
+    if (_filterStatus == 'all') return _tasks;
+    if (_filterStatus == 'pending') {
+      return _tasks.where((t) => t.adminReviewStatus == null || t.adminReviewStatus == 'pending').toList();
+    }
+    return _tasks.where((t) => t.adminReviewStatus == _filterStatus).toList();
+  }
+
+  Future<void> _reviewTask(TaskModel task, String status) async {
+    String? feedback;
+    
+    if (status == 'rejected') {
+      feedback = await showDialog<String>(
+        context: context,
+        builder: (context) {
+          final controller = TextEditingController();
+          return AlertDialog(
+            title: const Text('Rejection Feedback'),
+            content: TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                hintText: 'Enter reason for rejection...',
+              ),
+              maxLines: 3,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, controller.text),
+                child: const Text('Submit'),
+              ),
+            ],
+          );
+        },
+      );
+      if (feedback == null) return;
+    }
+
+    try {
+      await _taskService.adminReviewTask(task.id, status, feedback);
+      await _loadTasks();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Task ${status == 'approved' ? 'approved' : 'rejected'} successfully'),
+            backgroundColor: status == 'approved' ? Colors.green : Colors.orange,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to review task: $e')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                const Icon(Icons.assignment, color: AppTheme.primaryColor),
+                const SizedBox(width: 12),
+                const Text(
+                  'Supervisor Tasks',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: _loadTasks,
+                ),
+              ],
+            ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                _buildFilterChip('All', 'all'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Pending', 'pending'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Approved', 'approved'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Rejected', 'rejected'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Divider(height: 1),
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _filteredTasks.isEmpty
+                    ? const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.task_alt, size: 64, color: Colors.grey),
+                            SizedBox(height: 16),
+                            Text(
+                              'No tasks found',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        controller: widget.scrollController,
+                        padding: const EdgeInsets.all(16),
+                        itemCount: _filteredTasks.length,
+                        itemBuilder: (context, index) {
+                          final task = _filteredTasks[index];
+                          return _buildTaskCard(task);
+                        },
+                      ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(String label, String value) {
+    final isSelected = _filterStatus == value;
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (selected) {
+        setState(() => _filterStatus = value);
+      },
+    );
+  }
+
+  Widget _buildTaskCard(TaskModel task) {
+    final isPending = task.adminReviewStatus == null || task.adminReviewStatus == 'pending';
+    
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    task.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _getStatusColor(task.adminReviewStatus).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    _getStatusLabel(task.adminReviewStatus),
+                    style: TextStyle(
+                      color: _getStatusColor(task.adminReviewStatus),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              task.description,
+              style: TextStyle(color: Colors.grey[600]),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(Icons.person, size: 16, color: Colors.grey[500]),
+                const SizedBox(width: 4),
+                Text(
+                  task.assignedByName,
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                ),
+                const SizedBox(width: 16),
+                Icon(Icons.calendar_today, size: 16, color: Colors.grey[500]),
+                const SizedBox(width: 4),
+                Text(
+                  Helpers.formatDate(task.createdAt),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                ),
+              ],
+            ),
+            if (task.projectName != null) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.business, size: 16, color: Colors.grey[500]),
+                  const SizedBox(width: 4),
+                  Text(
+                    task.projectName!,
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                  ),
+                ],
+              ),
+            ],
+            if (task.adminFeedback != null && task.adminFeedback!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.feedback, size: 16, color: Colors.orange),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        task.adminFeedback!,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            if (isPending) ...[
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.close, size: 18, color: Colors.red),
+                    label: const Text('Reject', style: TextStyle(color: Colors.red)),
+                    onPressed: () => _reviewTask(task, 'rejected'),
+                  ),
+                  const SizedBox(width: 12),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.check, size: 18),
+                    label: const Text('Approve'),
+                    onPressed: () => _reviewTask(task, 'approved'),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _getStatusColor(String? status) {
+    switch (status) {
+      case 'approved':
+        return Colors.green;
+      case 'rejected':
+        return Colors.red;
+      default:
+        return Colors.orange;
+    }
+  }
+
+  String _getStatusLabel(String? status) {
+    switch (status) {
+      case 'approved':
+        return 'Approved';
+      case 'rejected':
+        return 'Rejected';
+      default:
+        return 'Pending';
+    }
   }
 }

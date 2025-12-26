@@ -28,6 +28,12 @@ class TaskModel extends Equatable {
   final String? reviewFeedback;           // Supervisor feedback/remarks
   final DateTime? reviewedAt;             // When supervisor reviewed
   final bool isDaily;                     // Is this a daily self-reported task
+  final String? projectId;               // Associated project ID (optional)
+  final String? projectName;             // Associated project name (optional)
+  final bool isSupervisorTask;           // If true, requires admin approval instead of supervisor
+  final String? adminReviewStatus;       // Admin review status for supervisor tasks
+  final String? adminFeedback;           // Admin feedback for supervisor tasks
+  final DateTime? adminReviewedAt;       // When admin reviewed
 
   const TaskModel({
     required this.id,
@@ -51,6 +57,12 @@ class TaskModel extends Equatable {
     this.reviewFeedback,
     this.reviewedAt,
     this.isDaily = false,
+    this.projectId,
+    this.projectName,
+    this.isSupervisorTask = false,
+    this.adminReviewStatus,
+    this.adminFeedback,
+    this.adminReviewedAt,
   });
 
   factory TaskModel.fromRealtimeDB(String id, Map<String, dynamic> data) {
@@ -97,6 +109,14 @@ class TaskModel extends Equatable {
           ? DateTime.fromMillisecondsSinceEpoch(data['reviewedAt'])
           : null,
       isDaily: data['isDaily'] ?? false,
+      projectId: data['projectId'],
+      projectName: data['projectName'],
+      isSupervisorTask: data['isSupervisorTask'] ?? false,
+      adminReviewStatus: data['adminReviewStatus'],
+      adminFeedback: data['adminFeedback'],
+      adminReviewedAt: data['adminReviewedAt'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(data['adminReviewedAt'])
+          : null,
     );
   }
 
@@ -122,6 +142,12 @@ class TaskModel extends Equatable {
       'reviewFeedback': reviewFeedback,
       'reviewedAt': reviewedAt?.millisecondsSinceEpoch,
       'isDaily': isDaily,
+      'projectId': projectId,
+      'projectName': projectName,
+      'isSupervisorTask': isSupervisorTask,
+      'adminReviewStatus': adminReviewStatus,
+      'adminFeedback': adminFeedback,
+      'adminReviewedAt': adminReviewedAt?.millisecondsSinceEpoch,
     };
   }
 
@@ -147,6 +173,12 @@ class TaskModel extends Equatable {
     String? reviewFeedback,
     DateTime? reviewedAt,
     bool? isDaily,
+    String? projectId,
+    String? projectName,
+    bool? isSupervisorTask,
+    String? adminReviewStatus,
+    String? adminFeedback,
+    DateTime? adminReviewedAt,
   }) {
     return TaskModel(
       id: id ?? this.id,
@@ -170,6 +202,12 @@ class TaskModel extends Equatable {
       reviewFeedback: reviewFeedback ?? this.reviewFeedback,
       reviewedAt: reviewedAt ?? this.reviewedAt,
       isDaily: isDaily ?? this.isDaily,
+      projectId: projectId ?? this.projectId,
+      projectName: projectName ?? this.projectName,
+      isSupervisorTask: isSupervisorTask ?? this.isSupervisorTask,
+      adminReviewStatus: adminReviewStatus ?? this.adminReviewStatus,
+      adminFeedback: adminFeedback ?? this.adminFeedback,
+      adminReviewedAt: adminReviewedAt ?? this.adminReviewedAt,
     );
   }
 
@@ -177,6 +215,8 @@ class TaskModel extends Equatable {
     if (dueDate == null) return false;
     return DateTime.now().isAfter(dueDate!) && status != TaskStatus.completed;
   }
+
+  bool get isProjectRelated => projectId != null && projectId!.isNotEmpty;
 
   @override
   List<Object?> get props => [
@@ -201,5 +241,11 @@ class TaskModel extends Equatable {
         reviewFeedback,
         reviewedAt,
         isDaily,
+        projectId,
+        projectName,
+        isSupervisorTask,
+        adminReviewStatus,
+        adminFeedback,
+        adminReviewedAt,
       ];
 }

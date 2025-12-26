@@ -15,6 +15,9 @@ class TaskService {
     required String corpId,
     required TaskPriority priority,
     DateTime? dueDate,
+    String? projectId,
+    String? projectName,
+    bool isSupervisorTask = false,
   }) async {
     try {
       final newTaskRef = _database.ref('tasks').push();
@@ -34,6 +37,9 @@ class TaskService {
         priority: priority,
         createdAt: DateTime.now(),
         dueDate: dueDate,
+        projectId: projectId,
+        projectName: projectName,
+        isSupervisorTask: isSupervisorTask,
       );
 
       await newTaskRef.set(task.toRealtimeDB());
@@ -41,6 +47,16 @@ class TaskService {
       // Also store reference in user's tasks for efficient querying
       await _database.ref('user_tasks/$assignedTo/$taskId').set(true);
       await _database.ref('assigned_tasks/$assignedBy/$taskId').set(true);
+      
+      // Index by project if project is specified
+      if (projectId != null && projectId.isNotEmpty) {
+        await _database.ref('project_tasks/$projectId/$taskId').set(true);
+      }
+      
+      // Index supervisor tasks for admin review
+      if (isSupervisorTask) {
+        await _database.ref('supervisor_tasks/$companyId/$taskId').set(true);
+      }
 
       return task;
     } catch (e) {
@@ -430,4 +446,211 @@ class TaskService {
       return tasks;
     });
   }
+
+  // Get tasks by project
+  Future<List<TaskModel>> getTasksByProject(String projectId) async {
+    try {
+      final taskIdsSnapshot = await _database.ref('project_tasks/$projectId').get();
+      
+      if (!taskIdsSnapshot.exists) {
+        return [];
+      }
+
+      final taskIds = (taskIdsSnapshot.value as Map).keys.toList();
+      final tasks = <TaskModel>[];
+
+      for (final taskId in taskIds) {
+        final taskSnapshot = await _database.ref('tasks/$taskId').get();
+        if (taskSnapshot.exists) {
+          tasks.add(TaskModel.fromRealtimeDB(
+            taskId.toString(),
+            Map<String, dynamic>.from(taskSnapshot.value as Map),
+          ));
+        }
+      }
+
+      tasks.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return tasks;
+    } catch (e) {
+      throw Exception('Failed to get tasks by project: $e');
+    }
+  }
+
+  // Get supervisor tasks for admin review
+  Future<List<TaskModel>> getSupervisorTasksForAdmin(String companyId) async {
+    try {
+      final taskIdsSnapshot = await _database.ref('supervisor_tasks/$companyId').get();
+      
+      if (!taskIdsSnapshot.exists) {
+        return [];
+      }
+
+      final taskIds = (taskIdsSnapshot.value as Map).keys.toList();
+      final tasks = <TaskModel>[];
+
+      for (final taskId in taskIds) {
+        final taskSnapshot = await _database.ref('tasks/$taskId').get();
+        if (taskSnapshot.exists) {
+          tasks.add(TaskModel.fromRealtimeDB(
+            taskId.toString(),
+            Map<String, dynamic>.from(taskSnapshot.value as Map),
+          ));
+        }
+      }
+
+      tasks.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return tasks;
+    } catch (e) {
+      throw Exception('Failed to get supervisor tasks: $e');
+    }
+  }
+
+  // Admin reviews supervisor task
+  Future<void> adminReviewTask(String taskId, String status, String? feedback) async {
+    try {
+      await _database.ref('tasks/$taskId').update({
+        'adminReviewStatus': status,
+        'adminFeedback': feedback,
+        'adminReviewedAt': DateTime.now().millisecondsSinceEpoch,
+      });
+    } catch (e) {
+      throw Exception('Failed to review supervisor task: $e');
+    }
+  }
+
+  // Get tasks filtered by project and/or user
+  Future<List<TaskModel>> getFilteredTasks({
+    String? projectId,
+    String? userId,
+    String? assignedBy,
+    TaskStatus? status,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
+    try {
+      List<TaskModel> tasks = [];
+      
+      // Start with either project tasks or user tasks
+      if (projectId != null) {
+        tasks = await getTasksByProject(projectId);
+      } else if (userId != null) {
+        tasks = await getTasksAssignedToUser(userId);
+      } else if (assignedBy != null) {
+        tasks = await getTasksAssignedByUser(assignedBy);
+      }
+
+      // Apply filters
+      if (userId != null && projectId != null) {
+        tasks = tasks.where((t) => t.assignedTo == userId).toList();
+      }
+      
+      if (assignedBy != null && projectId != null) {
+        tasks = tasks.where((t) => t.assignedBy == assignedBy).toList();
+      }
+
+      if (status != null) {
+        tasks = tasks.where((t) => t.status == status).toList();
+      }
+
+      if (startDate != null) {
+        tasks = tasks.where((t) => t.createdAt.isAfter(startDate)).toList();
+      }
+
+      if (endDate != null) {
+        tasks = tasks.where((t) => t.createdAt.isBefore(endDate.add(const Duration(days: 1)))).toList();
+      }
+
+      return tasks;
+    } catch (e) {
+      throw Exception('Failed to get filtered tasks: $e');
+    }
+  }
+
+  // Create daily task with project association
+  Future<TaskModel> createDailyTaskWithProject({
+    required String title,
+    required String description,
+    required String userId,
+    required String userName,
+    required String supervisorId,
+    required String supervisorName,
+    required String companyId,
+    required String corpId,
+    String? projectId,
+    String? projectName,
+  }) async {
+    try {
+      final newTaskRef = _database.ref('tasks').push();
+      final taskId = newTaskRef.key!;
+
+      final task = TaskModel(
+        id: taskId,
+        title: title,
+        description: description,
+        assignedTo: userId,
+        assignedToName: userName,
+        assignedBy: userId,  // Self-assigned
+        assignedByName: userName,
+        companyId: companyId,
+        corpId: corpId,
+        status: TaskStatus.completed,  // Already completed since it's a report
+        priority: TaskPriority.medium,
+        createdAt: DateTime.now(),
+        completedAt: DateTime.now(),
+        isDaily: true,
+        reviewStatus: TaskReviewStatus.pending,
+        projectId: projectId,
+        projectName: projectName,
+      );
+
+      await newTaskRef.set(task.toRealtimeDB());
+
+      // Store in user_tasks and supervisor view
+      await _database.ref('user_tasks/$userId/$taskId').set(true);
+      await _database.ref('daily_tasks/$supervisorId/$userId/${_getDateKey(DateTime.now())}/$taskId').set(true);
+      
+      // Index by project if specified
+      if (projectId != null && projectId.isNotEmpty) {
+        await _database.ref('project_tasks/$projectId/$taskId').set(true);
+      }
+
+      return task;
+    } catch (e) {
+      throw Exception('Failed to create daily task: $e');
+    }
+  }
+
+  // Get pending tasks for review (by reviewer)
+  Future<List<TaskModel>> getPendingReviewTasks(String reviewerId) async {
+    try {
+      final tasks = await getTasksAssignedByUser(reviewerId);
+      return tasks.where((t) => 
+        t.status == TaskStatus.completed && 
+        t.reviewStatus == TaskReviewStatus.pending
+      ).toList();
+    } catch (e) {
+      throw Exception('Failed to get pending review tasks: $e');
+    }
+  }
+
+  // Get all unique projects from tasks
+  Future<List<Map<String, String>>> getProjectsFromTasks(String userId) async {
+    try {
+      final tasks = await getTasksAssignedToUser(userId);
+      final projects = <String, String>{};
+      
+      for (final task in tasks) {
+        if (task.projectId != null && task.projectName != null) {
+          projects[task.projectId!] = task.projectName!;
+        }
+      }
+      
+      return projects.entries
+          .map((e) => {'id': e.key, 'name': e.value})
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to get projects from tasks: $e');
+    }
+  }
 }
+

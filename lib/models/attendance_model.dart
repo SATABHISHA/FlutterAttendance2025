@@ -20,6 +20,8 @@ class AttendanceModel extends Equatable {
   final AttendanceStatus status;
   final String? country;
   final String? timezone;
+  final String? projectId;
+  final String? projectName;
 
   const AttendanceModel({
     required this.id,
@@ -39,6 +41,8 @@ class AttendanceModel extends Equatable {
     required this.status,
     this.country,
     this.timezone,
+    this.projectId,
+    this.projectName,
   });
 
   factory AttendanceModel.fromRealtimeDB(String id, Map<String, dynamic> data) {
@@ -69,6 +73,8 @@ class AttendanceModel extends Equatable {
       ),
       country: data['country'],
       timezone: data['timezone'],
+      projectId: data['projectId'],
+      projectName: data['projectName'],
     );
   }
 
@@ -90,6 +96,8 @@ class AttendanceModel extends Equatable {
       'status': status.name,
       'country': country,
       'timezone': timezone,
+      'projectId': projectId,
+      'projectName': projectName,
     };
   }
 
@@ -111,6 +119,8 @@ class AttendanceModel extends Equatable {
     AttendanceStatus? status,
     String? country,
     String? timezone,
+    String? projectId,
+    String? projectName,
   }) {
     return AttendanceModel(
       id: id ?? this.id,
@@ -130,6 +140,8 @@ class AttendanceModel extends Equatable {
       status: status ?? this.status,
       country: country ?? this.country,
       timezone: timezone ?? this.timezone,
+      projectId: projectId ?? this.projectId,
+      projectName: projectName ?? this.projectName,
     );
   }
 
@@ -142,6 +154,7 @@ class AttendanceModel extends Equatable {
 
   bool get hasCheckedIn => checkInTime != null;
   bool get hasCheckedOut => checkOutTime != null;
+  bool get isProjectBased => projectId != null && projectId!.isNotEmpty;
 
   @override
   List<Object?> get props => [
@@ -162,5 +175,7 @@ class AttendanceModel extends Equatable {
         status,
         country,
         timezone,
+        projectId,
+        projectName,
       ];
 }

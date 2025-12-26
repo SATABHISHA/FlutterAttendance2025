@@ -11,4 +11,8 @@ export 'dashboard/daily_report_screen.dart';
 export 'dashboard/task_statistics_screen.dart';
 export 'dashboard/subordinate_tasks_screen.dart';
 export 'dashboard/team_reports_screen.dart';
+export 'dashboard/project_allocation_screen.dart';
+export 'dashboard/location_picker_screen.dart';
+export 'dashboard/attendance_export_screen.dart';
+export 'dashboard/task_performance_screen.dart';
 export 'admin/admin_dashboard_screen.dart';

@@ -12,6 +12,7 @@ class UserModel extends Equatable {
   final String? supervisorId;
   final String? profileImagePath;
   final bool biometricEnabled;
+  final bool canCheckInFromAnywhere; // Admin can allow supervisor to check-in from anywhere
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -27,6 +28,7 @@ class UserModel extends Equatable {
     this.supervisorId,
     this.profileImagePath,
     this.biometricEnabled = false,
+    this.canCheckInFromAnywhere = false,
     required this.createdAt,
     this.updatedAt,
   });
@@ -44,6 +46,7 @@ class UserModel extends Equatable {
       supervisorId: data['supervisorId'],
       profileImagePath: data['profileImagePath'],
       biometricEnabled: data['biometricEnabled'] ?? false,
+      canCheckInFromAnywhere: data['canCheckInFromAnywhere'] ?? false,
       createdAt: data['createdAt'] != null 
           ? DateTime.fromMillisecondsSinceEpoch(data['createdAt']) 
           : DateTime.now(),
@@ -65,6 +68,7 @@ class UserModel extends Equatable {
       'supervisorId': supervisorId,
       'profileImagePath': profileImagePath,
       'biometricEnabled': biometricEnabled,
+      'canCheckInFromAnywhere': canCheckInFromAnywhere,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'updatedAt': updatedAt?.millisecondsSinceEpoch,
     };
@@ -82,6 +86,7 @@ class UserModel extends Equatable {
     String? supervisorId,
     String? profileImagePath,
     bool? biometricEnabled,
+    bool? canCheckInFromAnywhere,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -97,6 +102,7 @@ class UserModel extends Equatable {
       supervisorId: supervisorId ?? this.supervisorId,
       profileImagePath: profileImagePath ?? this.profileImagePath,
       biometricEnabled: biometricEnabled ?? this.biometricEnabled,
+      canCheckInFromAnywhere: canCheckInFromAnywhere ?? this.canCheckInFromAnywhere,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -115,6 +121,7 @@ class UserModel extends Equatable {
         supervisorId,
         profileImagePath,
         biometricEnabled,
+        canCheckInFromAnywhere,
         createdAt,
         updatedAt,
       ];

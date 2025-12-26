@@ -73,6 +73,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<StorageService>(
           create: (_) => StorageService(),
         ),
+        RepositoryProvider<ProjectService>(
+          create: (_) => ProjectService(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -97,6 +100,11 @@ class MyApp extends StatelessWidget {
           BlocProvider<TaskBloc>(
             create: (context) => TaskBloc(
               taskService: context.read<TaskService>(),
+            ),
+          ),
+          BlocProvider<ProjectBloc>(
+            create: (context) => ProjectBloc(
+              projectService: context.read<ProjectService>(),
             ),
           ),
         ],
@@ -141,6 +149,9 @@ class AttendanceApp extends StatelessWidget {
         '/task-statistics': (context) => const TaskStatisticsScreen(),
         '/subordinate-tasks': (context) => const SubordinateTasksScreen(),
         '/team-reports': (context) => const TeamReportsScreen(),
+        '/project-allocation': (context) => const ProjectAllocationScreen(),
+        '/task-performance': (context) => const TaskPerformanceScreen(),
+        '/attendance-export': (context) => const AttendanceExportScreen(),
       },
     );
   }
